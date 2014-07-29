@@ -1,16 +1,16 @@
 'use strict';
 
-describe('Controller: managelocationsCtrl', function () {
+describe('Controller: MeetupCtrl', function () {
 
   // load the controller's module
   beforeEach(module('needjoeApp'));
 
-  var managelocationsCtrl, scope;
+  var MeetupCtrl, scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    managelocationsCtrl = $controller('managelocationsCtrl', {
+    MeetupCtrl = $controller('MeetupCtrl', {
       $scope: scope
     });
   }));

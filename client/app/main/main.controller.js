@@ -19,6 +19,8 @@ angular.module('needjoeApp')
 
     $scope.deleteThing = function(thing) {
       $http.delete('/api/things/' + thing._id);
+      //event.preventDefault();
+      //event.stopPropagation();
     };
 
     $scope.$on('$destroy', function () {

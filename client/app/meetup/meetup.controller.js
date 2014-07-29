@@ -1,6 +1,6 @@
 'use strict';
 
 angular.module('needjoeApp')
-  .controller('managelocationsCtrl', function ($scope) {
+  .controller('MeetupCtrl', function ($scope) {
     $scope.message = 'Hello';
   });

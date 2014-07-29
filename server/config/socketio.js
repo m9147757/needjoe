@@ -18,6 +18,8 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/yelper/yelper.socket').register(socket);
+  require('../api/venue/venue.socket').register(socket);
   require('../api/thing/thing.socket').register(socket);
 }
 
