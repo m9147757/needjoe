@@ -4,12 +4,13 @@
 
 <h3>Addresses</h3><br>
 Where are you?<br>
-<input type="text" id="address1" style="width:450px" value="1010 Fountainwood Drive, Georgetown, Tx, 78633"><br>
+<input type="text" id="address1" style="width:450px" value="401 Casa Verde Drive, Georgetown, Tx, 78633"><br>
 <br>
 Where is your friend?<br>
 <input type="text" id="address2" style="width:450px" value="121 Richard Road, Georgetown, Tx, 78633"><br>   
 <br>
 <br>
+<input type="button" id="showLocation" value="Show Locations"/>
 
 
 
@@ -23,7 +24,15 @@ Where is your friend?<br>
 
     <div id="map_canvas"></div>
     
+    
     <script language="javascript">
+
+        var map;
+        var location1 = {latitude:null, longitude:null};
+        var location2 = {latitude:null, longitude:null};
+        var geocoder = new google.maps.Geocoder();
+        var markersArray = [];
+        
         $(document).ready(function(){
         var map_canvas = document.getElementById("map_canvas");
         var map_options = {
@@ -31,7 +40,102 @@ Where is your friend?<br>
           zoom: 8,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         }
-        var map = new google.maps.Map(map_canvas, map_options)
+        map = new google.maps.Map(map_canvas, map_options)
         ///alert('done');
       });
+ 
+ 
+      $("#showLocation").on("click",function(){doMappings()});
+      
+      function doMappings(){
+        deleteOverlays();
+        getCoords(document.getElementById("address1").value,location1);
+        getCoords(document.getElementById("address2").value,location2);
+      }
+
+        function getCoords(address,location) {
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    location.latitude = results[0].geometry.location.lat();
+                    location.longitude = results[0].geometry.location.lng();
+                    addMarker(location);
+                    
+                    if (isValidLocation(location1) && isValidLocation(location2)) {
+                        showMiddle();
+                    }
+               } else {
+                    alert("Request failed.")
+                }
+            });
+        }
+        
+        function isValidLocation(location) {
+            if (location.latitude == null || location.longitude == null)
+                return false;
+            return true;
+        }
+        
+        function showMiddle() {
+            var avgLat = (location1.latitude + location2.latitude)/2;
+            var avgLon = (location1.longitude + location2.longitude)/2;
+            
+            var location= {latitude:avgLat, longitude:avgLon};
+            addMarker(location);
+        }
+        
+            
+        function calculateDistance()
+        {
+            try
+            {
+                var miledistance = latlon1.distanceFrom(latlon1, 3959).toFixed(1);
+                var kmdistance = (miledistance * 1.609344).toFixed(1);
+        
+                //document.getElementById('results').innerHTML = '<strong>Address 1: </strong>' + location1.address + '<br /><strong>Address 2: </strong>' + location2.address + '<br /><strong>Distance: </strong>' + miledistance + ' miles (or ' + kmdistance + ' kilometers)';
+                alert(miledistance);
+            }
+            catch (error)
+            {
+                alert(error);
+            }
+        }
+        
+        function addMarker(location) {
+            var coords = new google.maps.LatLng(location.latitude,location.longitude);
+            var marker = new google.maps.Marker({
+                position: coords,
+                map: map,
+                title: 'Hello World!'
+            })
+          markersArray.push(marker);
+        }
+        
+        // Removes the overlays from the map, but keeps them in the array
+        function clearOverlays() {
+          if (markersArray) {
+            for (i in markersArray) {
+              markersArray[i].setMap(null);
+            }
+          }
+        }
+        
+        // Shows any overlays currently in the array
+        function showOverlays() {
+          if (markersArray) {
+            for (i in markersArray) {
+              markersArray[i].setMap(map);
+            }
+          }
+        }
+        
+        // Deletes all markers in the array by removing references to them
+        function deleteOverlays() {
+          if (markersArray) {
+            for (i in markersArray) {
+              markersArray[i].setMap(null);
+            }
+            markersArray.length = 0;
+          }
+        }
+
     </script>
